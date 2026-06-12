@@ -23,7 +23,7 @@ const StreamDetails = () => {
 
   useEffect(() => {
     fetchData();
-    const socket = io('http://localhost:5000');
+    const socket = io('https://yt-live-manager-backend.onrender.com');
     socket.on('stream-status', () => fetchState());
     socket.on('health-update', ({ streamId, health }) => {
       if (streamId === id) setState((s: any) => ({ ...s, health }));
@@ -42,9 +42,9 @@ const StreamDetails = () => {
   const fetchData = async () => {
     try {
       const [instRes, accRes, plRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/stream/instances', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:5000/api/youtube-accounts', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:5000/api/playlists', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get('https://yt-live-manager-backend.onrender.com/api/stream/instances', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get('https://yt-live-manager-backend.onrender.com/api/youtube-accounts', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get('https://yt-live-manager-backend.onrender.com/api/playlists', { headers: { Authorization: `Bearer ${token}` } })
       ]);
       const current = instRes.data.find((i: any) => i._id === id);
       setInstance(current);
@@ -72,7 +72,7 @@ const StreamDetails = () => {
 
   const fetchState = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/stream/states', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get('https://yt-live-manager-backend.onrender.com/api/stream/states', { headers: { Authorization: `Bearer ${token}` } });
       const current = res.data.find((s: any) => s.streamInstanceId?._id === id || s.streamInstanceId === id);
       setState(current || {});
     } catch (err) {}
@@ -80,14 +80,14 @@ const StreamDetails = () => {
 
   const fetchLogs = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/stream/instances/${id}/logs`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`https://yt-live-manager-backend.onrender.com/api/stream/instances/${id}/logs`, { headers: { Authorization: `Bearer ${token}` } });
       setLogs(res.data);
     } catch (err) {}
   };
 
   const handleAction = async (action: 'start' | 'stop') => {
     try {
-      await axios.post(`http://localhost:5000/api/stream/${id}/${action}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`https://yt-live-manager-backend.onrender.com/api/stream/${id}/${action}`, {}, { headers: { Authorization: `Bearer ${token}` } });
       fetchState();
     } catch (err) {}
   };
@@ -95,7 +95,7 @@ const StreamDetails = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/stream/instances/${id}`, formData, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.put(`https://yt-live-manager-backend.onrender.com/api/stream/instances/${id}`, formData, { headers: { Authorization: `Bearer ${token}` } });
       alert('Settings saved successfully');
       fetchData();
     } catch (err) {
@@ -187,7 +187,7 @@ const StreamDetails = () => {
              <button type="button" onClick={async () => {
                 if (window.confirm('Are you sure you want to permanently delete this stream?')) {
                    try {
-                     await axios.post(`http://localhost:5000/api/stream/bulk/delete`, { ids: [id] }, { headers: { Authorization: `Bearer ${token}` } });
+                     await axios.post(`https://yt-live-manager-backend.onrender.com/api/stream/bulk/delete`, { ids: [id] }, { headers: { Authorization: `Bearer ${token}` } });
                      navigate('/streams');
                    } catch (e) { alert('Failed to delete stream.'); }
                 }

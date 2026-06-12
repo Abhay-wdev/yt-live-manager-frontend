@@ -16,7 +16,7 @@ const Videos = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/videos', {
+      const res = await axios.get('https://yt-live-manager-backend.onrender.com/api/videos', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVideos(res.data);
@@ -34,7 +34,7 @@ const Videos = () => {
     formData.append('video', file);
 
     try {
-      await axios.post('http://localhost:5000/api/videos/local', formData, {
+      await axios.post('https://yt-live-manager-backend.onrender.com/api/videos/local', formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -54,7 +54,7 @@ const Videos = () => {
   const handleAddDriveLink = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/videos/drive', { driveLink }, {
+      await axios.post('https://yt-live-manager-backend.onrender.com/api/videos/drive', { driveLink }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDriveLink('');
@@ -67,7 +67,7 @@ const Videos = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/videos/${id}`, {
+      await axios.delete(`https://yt-live-manager-backend.onrender.com/api/videos/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchVideos();
@@ -141,7 +141,7 @@ const Videos = () => {
                 <td className="p-4">
                   {video.sourceType === 'local' ? (
                     <video 
-                      src={`http://localhost:5000/uploads/${video.filename}`} 
+                      src={`https://yt-live-manager-backend.onrender.com/uploads/${video.filename}`} 
                       className="w-48 h-28 object-cover rounded bg-black" 
                       controls 
                     />

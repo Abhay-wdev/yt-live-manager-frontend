@@ -30,8 +30,8 @@ const Settings = () => {
   const fetchData = async () => {
     try {
       const [accRes, plRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/youtube-accounts', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:5000/api/playlists', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get('https://yt-live-manager-backend.onrender.com/api/youtube-accounts', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get('https://yt-live-manager-backend.onrender.com/api/playlists', { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setAccounts(accRes.data);
       setPlaylists(plRes.data);
@@ -50,7 +50,7 @@ const Settings = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/stream/instances', formData, {
+      await axios.post('https://yt-live-manager-backend.onrender.com/api/stream/instances', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/');

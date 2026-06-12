@@ -18,7 +18,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
     
-    const socket = io('http://localhost:5000');
+    const socket = io('https://yt-live-manager-backend.onrender.com');
     socket.on('stream-status', () => fetchData());
     socket.on('health-update', ({ streamId, health }) => {
       setStates(prev => prev.map(s => {
@@ -46,8 +46,8 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const [instRes, statRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/stream/instances', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:5000/api/stream/states', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get('https://yt-live-manager-backend.onrender.com/api/stream/instances', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get('https://yt-live-manager-backend.onrender.com/api/stream/states', { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setInstances(instRes.data);
       setStates(statRes.data);
@@ -58,7 +58,7 @@ const Dashboard = () => {
 
   const handleAction = async (id: string, action: 'start' | 'stop') => {
     try {
-      await axios.post(`http://localhost:5000/api/stream/${id}/${action}`, {}, {
+      await axios.post(`https://yt-live-manager-backend.onrender.com/api/stream/${id}/${action}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchData();

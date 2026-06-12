@@ -21,7 +21,7 @@ const Schedules = () => {
 
   const fetchSchedules = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/schedules', {
+      const res = await axios.get('https://yt-live-manager-backend.onrender.com/api/schedules', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSchedules(res.data);
@@ -32,7 +32,7 @@ const Schedules = () => {
 
   const fetchPlaylists = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/playlists', {
+      const res = await axios.get('https://yt-live-manager-backend.onrender.com/api/playlists', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPlaylists(res.data);
@@ -47,7 +47,7 @@ const Schedules = () => {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/schedules', {
+      await axios.post('https://yt-live-manager-backend.onrender.com/api/schedules', {
         playlistId,
         startTime: startTime ? new Date(startTime).toISOString() : null,
         endTime: endTime ? new Date(endTime).toISOString() : null,
@@ -66,7 +66,7 @@ const Schedules = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/schedules/${id}`, {
+      await axios.delete(`https://yt-live-manager-backend.onrender.com/api/schedules/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchSchedules();

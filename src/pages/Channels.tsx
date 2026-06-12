@@ -13,7 +13,7 @@ const Channels = () => {
 
   const fetchAccounts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/youtube-accounts', {
+      const res = await axios.get('https://yt-live-manager-backend.onrender.com/api/youtube-accounts', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAccounts(res.data);
@@ -29,7 +29,7 @@ const Channels = () => {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/youtube-accounts', {
+      await axios.post('https://yt-live-manager-backend.onrender.com/api/youtube-accounts', {
         name, channelId, streamKey
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -47,7 +47,7 @@ const Channels = () => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this channel?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/youtube-accounts/${id}`, {
+      await axios.delete(`https://yt-live-manager-backend.onrender.com/api/youtube-accounts/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchAccounts();

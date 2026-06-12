@@ -20,8 +20,8 @@ const StreamsManager = () => {
   const fetchData = async () => {
     try {
       const [instRes, statRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/stream/instances', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:5000/api/stream/states', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get('https://yt-live-manager-backend.onrender.com/api/stream/instances', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get('https://yt-live-manager-backend.onrender.com/api/stream/states', { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setInstances(instRes.data);
       setStates(statRes.data);
@@ -37,7 +37,7 @@ const StreamsManager = () => {
     if (action === 'delete' && !window.confirm('Are you sure you want to delete selected streams?')) return;
     
     try {
-      await axios.post(`http://localhost:5000/api/stream/bulk/${action}`, { ids: selectedIds }, {
+      await axios.post(`https://yt-live-manager-backend.onrender.com/api/stream/bulk/${action}`, { ids: selectedIds }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSelectedIds([]);
@@ -49,7 +49,7 @@ const StreamsManager = () => {
 
   const handleDuplicate = async (id: string) => {
     try {
-      await axios.post(`http://localhost:5000/api/stream/instances/${id}/duplicate`, {}, {
+      await axios.post(`https://yt-live-manager-backend.onrender.com/api/stream/instances/${id}/duplicate`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchData();

@@ -18,7 +18,7 @@ const Playlists = () => {
 
   const fetchPlaylists = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/playlists', {
+      const res = await axios.get('https://yt-live-manager-backend.onrender.com/api/playlists', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPlaylists(res.data);
@@ -29,7 +29,7 @@ const Playlists = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/videos', {
+      const res = await axios.get('https://yt-live-manager-backend.onrender.com/api/videos', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVideos(res.data);
@@ -40,7 +40,7 @@ const Playlists = () => {
 
   const fetchPlaylistItems = async (playlistId: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/playlists/${playlistId}/items`, {
+      const res = await axios.get(`https://yt-live-manager-backend.onrender.com/api/playlists/${playlistId}/items`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPlaylistItems(res.data);
@@ -53,7 +53,7 @@ const Playlists = () => {
     e.preventDefault();
     if (!newPlaylistName) return;
     try {
-      await axios.post('http://localhost:5000/api/playlists', { name: newPlaylistName }, {
+      await axios.post('https://yt-live-manager-backend.onrender.com/api/playlists', { name: newPlaylistName }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewPlaylistName('');
@@ -71,7 +71,7 @@ const Playlists = () => {
   const handleAddVideoToPlaylist = async (videoId: string) => {
     if (!selectedPlaylist) return;
     try {
-      await axios.post(`http://localhost:5000/api/playlists/${selectedPlaylist._id}/items`, { videoId }, {
+      await axios.post(`https://yt-live-manager-backend.onrender.com/api/playlists/${selectedPlaylist._id}/items`, { videoId }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchPlaylistItems(selectedPlaylist._id);
@@ -83,7 +83,7 @@ const Playlists = () => {
   const handleRemoveItem = async (itemId: string) => {
     if (!selectedPlaylist) return;
     try {
-      await axios.delete(`http://localhost:5000/api/playlists/${selectedPlaylist._id}/items/${itemId}`, {
+      await axios.delete(`https://yt-live-manager-backend.onrender.com/api/playlists/${selectedPlaylist._id}/items/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchPlaylistItems(selectedPlaylist._id);
@@ -96,7 +96,7 @@ const Playlists = () => {
     e.stopPropagation(); // Prevent selecting the playlist when clicking delete
     if (!window.confirm('Are you sure you want to delete this playlist? This will remove all items inside it.')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/playlists/${playlistId}`, {
+      await axios.delete(`https://yt-live-manager-backend.onrender.com/api/playlists/${playlistId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (selectedPlaylist?._id === playlistId) {
