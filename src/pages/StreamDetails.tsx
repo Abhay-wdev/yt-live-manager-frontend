@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { ArrowLeft, Play, Square, RefreshCcw, Save } from 'lucide-react';
+import { ArrowLeft, Play, Square, RefreshCcw, Save, Trash2 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
 const StreamDetails = () => {

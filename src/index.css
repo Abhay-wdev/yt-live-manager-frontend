@@ -1,10 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   body {
-    @apply bg-[#0f1115] text-gray-200 antialiased selection:bg-red-500/30;
+    background-color: #0f1115;
+    color: #e5e7eb;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background-color: rgb(239 68 68 / 0.3);
   }
 }
 
