@@ -9,6 +9,8 @@ const Videos = () => {
   const [driveLink, setDriveLink] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStats, setUploadStats] = useState({ loaded: 0, total: 0, timeRemaining: 0 });
 
   useEffect(() => {
     fetchVideos();
@@ -16,7 +18,7 @@ const Videos = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get('https://yt-live-manager-backend.onrender.com/api/videos', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/videos`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVideos(res.data);
@@ -30,14 +32,32 @@ const Videos = () => {
     if (!file) return;
 
     setIsUploading(true);
+    setUploadProgress(0);
+    const startTime = Date.now();
     const formData = new FormData();
     formData.append('video', file);
 
     try {
-      await axios.post('https://yt-live-manager-backend.onrender.com/api/videos/local', formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/videos/local`, formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(progress);
+            
+            const timeElapsed = (Date.now() - startTime) / 1000;
+            const uploadSpeed = timeElapsed > 0 ? progressEvent.loaded / timeElapsed : 0;
+            const timeRemaining = uploadSpeed > 0 ? (progressEvent.total - progressEvent.loaded) / uploadSpeed : 0;
+            
+            setUploadStats({
+              loaded: progressEvent.loaded,
+              total: progressEvent.total,
+              timeRemaining: timeRemaining
+            });
+          }
         }
       });
       setFile(null);
@@ -54,7 +74,7 @@ const Videos = () => {
   const handleAddDriveLink = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('https://yt-live-manager-backend.onrender.com/api/videos/drive', { driveLink }, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/videos/drive`, { driveLink }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDriveLink('');
@@ -67,7 +87,7 @@ const Videos = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`https://yt-live-manager-backend.onrender.com/api/videos/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/videos/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchVideos();
@@ -116,6 +136,17 @@ const Videos = () => {
             >
               {isUploading ? 'Uploading...' : 'Upload Video'}
             </button>
+            {isUploading && uploadStats.total > 0 && (
+              <div className="mt-4 bg-gray-900 p-3 rounded-lg border border-gray-700">
+                <div className="w-full bg-gray-800 rounded-full h-3 mb-2 overflow-hidden">
+                  <div className="bg-green-500 h-3 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
+                </div>
+                <div className="flex justify-between text-xs text-gray-300 font-medium">
+                  <span>{uploadProgress}% ({ (uploadStats.loaded / (1024 * 1024)).toFixed(1) } MB / { (uploadStats.total / (1024 * 1024)).toFixed(1) } MB)</span>
+                  <span className="text-gray-400">{Math.round(uploadStats.timeRemaining)}s remaining</span>
+                </div>
+              </div>
+            )}
           </form>
         </div>
       </div>
@@ -141,7 +172,7 @@ const Videos = () => {
                 <td className="p-4">
                   {video.sourceType === 'local' ? (
                     <video 
-                      src={`https://yt-live-manager-backend.onrender.com/uploads/${video.filename}`} 
+                      src={`${import.meta.env.VITE_API_URL}/uploads/${video.filename}`} 
                       className="w-48 h-28 object-cover rounded bg-black" 
                       controls 
                     />

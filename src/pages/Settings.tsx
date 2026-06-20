@@ -30,8 +30,8 @@ const Settings = () => {
   const fetchData = async () => {
     try {
       const [accRes, plRes] = await Promise.all([
-        axios.get('https://yt-live-manager-backend.onrender.com/api/youtube-accounts', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('https://yt-live-manager-backend.onrender.com/api/playlists', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${import.meta.env.VITE_API_URL}/api/youtube-accounts`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/playlists`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setAccounts(accRes.data);
       setPlaylists(plRes.data);
@@ -50,7 +50,7 @@ const Settings = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('https://yt-live-manager-backend.onrender.com/api/stream/instances', formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/stream/instances`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/');
@@ -70,11 +70,71 @@ const Settings = () => {
     );
   }
 
+  const [passwordData, setPasswordData] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordMessage, setPasswordMessage] = useState({ type: '', text: '' });
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+  };
+
+  const submitPasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordMessage({ type: 'error', text: 'New passwords do not match' });
+      return;
+    }
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/change-password`, 
+        { oldPassword: passwordData.oldPassword, newPassword: passwordData.newPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setPasswordMessage({ type: 'success', text: 'Password updated successfully' });
+      setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (err: any) {
+      setPasswordMessage({ type: 'error', text: err.response?.data?.message || 'Failed to change password' });
+    }
+  };
+
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-white">Create Stream Instance</h1>
+    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-8">
       
-      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+      {/* Change Password Section */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-white">Account Settings</h1>
+        <form onSubmit={submitPasswordChange} className="bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-xl border border-gray-700 shadow-xl">
+          <h2 className="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">Change Password</h2>
+          
+          {passwordMessage.text && (
+            <div className={`p-3 rounded mb-4 ${passwordMessage.type === 'error' ? 'bg-red-500/20 text-red-500 border border-red-500' : 'bg-green-500/20 text-green-500 border border-green-500'}`}>
+              {passwordMessage.text}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-gray-400 mb-2">Current Password</label>
+              <input type="password" name="oldPassword" value={passwordData.oldPassword} onChange={handlePasswordChange} required className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 focus:border-red-500 focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-2">New Password</label>
+              <input type="password" name="newPassword" value={passwordData.newPassword} onChange={handlePasswordChange} required className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 focus:border-red-500 focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-2">Confirm New Password</label>
+              <input type="password" name="confirmPassword" value={passwordData.confirmPassword} onChange={handlePasswordChange} required className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 focus:border-red-500 focus:outline-none" />
+            </div>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <button type="submit" className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+              Update Password
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-white">Create Stream Instance</h1>
+        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
         {/* Basic Info */}
         <div className="bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-xl border border-gray-700 shadow-xl">
           <h2 className="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">General Settings</h2>
@@ -156,6 +216,7 @@ const Settings = () => {
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 };

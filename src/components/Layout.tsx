@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Video, ListVideo, Calendar, Settings, LogOut, Radio, Tv, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Video, ListVideo, Calendar, Settings, LogOut, Radio, Tv, Menu, X, Users } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 const Layout = () => {
   const logout = useAuthStore(state => state.logout);
+  const user = useAuthStore(state => state.user);
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,6 +22,7 @@ const Layout = () => {
     { name: 'Playlists', icon: ListVideo, path: '/playlists' },
     { name: 'Channels', icon: Tv, path: '/channels' },
     { name: 'Scheduling', icon: Calendar, path: '/schedules' },
+    ...(user?.role === 'admin' ? [{ name: 'Team', icon: Users, path: '/team' }] : []),
     { name: 'Settings', icon: Settings, path: '/settings' },
   ];
 

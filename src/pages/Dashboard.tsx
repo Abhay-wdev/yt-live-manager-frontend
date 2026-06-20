@@ -18,7 +18,11 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
     
-    const socket = io('https://yt-live-manager-backend.onrender.com');
+    const socket = io(import.meta.env.VITE_API_URL, {
+      extraHeaders: {
+        'Bypass-Tunnel-Reminder': 'true'
+      }
+    });
     socket.on('stream-status', () => fetchData());
     socket.on('health-update', ({ streamId, health }) => {
       setStates(prev => prev.map(s => {
@@ -46,8 +50,8 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const [instRes, statRes] = await Promise.all([
-        axios.get('https://yt-live-manager-backend.onrender.com/api/stream/instances', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('https://yt-live-manager-backend.onrender.com/api/stream/states', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${import.meta.env.VITE_API_URL}/api/stream/instances`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/stream/states`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setInstances(instRes.data);
       setStates(statRes.data);
@@ -58,7 +62,7 @@ const Dashboard = () => {
 
   const handleAction = async (id: string, action: 'start' | 'stop') => {
     try {
-      await axios.post(`https://yt-live-manager-backend.onrender.com/api/stream/${id}/${action}`, {}, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/stream/${id}/${action}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchData();
