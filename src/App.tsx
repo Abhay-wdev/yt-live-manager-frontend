@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
+import GamePage from './pages/GamePage';
 import Videos from './pages/Videos';
 import Playlists from './pages/Playlists';
 import Schedules from './pages/Schedules';
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
           <Route path="team" element={<Team />} />
+          <Route path="game" element={<GamePage />} />
           <Route path="videos" element={<Videos />} />
           <Route path="streams" element={<StreamsManager />} />
           <Route path="streams/:id" element={<StreamDetails />} />

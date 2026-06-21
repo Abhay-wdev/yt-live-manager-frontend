@@ -7,6 +7,10 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     server: {
+      headers: {
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+      },
       proxy: {
         '/api': {
           target: env.PROXY_API_URL || 'http://localhost:5000',

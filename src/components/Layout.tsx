@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Video, ListVideo, Calendar, Settings, LogOut, Radio, Tv, Menu, X, Users } from 'lucide-react';
+import { LayoutDashboard, Video, ListVideo, Calendar, Settings, LogOut, Radio, Tv, Menu, X, Users, Gamepad2 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 const Layout = () => {
@@ -17,6 +17,7 @@ const Layout = () => {
 
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { name: 'Shorts Generator', icon: Gamepad2, path: '/game' },
     { name: 'Streams Manager', icon: Radio, path: '/streams' },
     { name: 'Videos', icon: Video, path: '/videos' },
     { name: 'Playlists', icon: ListVideo, path: '/playlists' },
